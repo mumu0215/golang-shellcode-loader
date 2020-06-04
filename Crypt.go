@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"fmt"
+	//"fmt"
 	"os"
 )
 var filename=flag.String("f","","fileName")
@@ -10,40 +10,40 @@ var data=flag.String("s","","input string")
 var	encodeing=flag.Bool("e",false,"encode")
 var decodeing=flag.Bool("d",false,"decode")
 
-var key=[]byte{97,97,114,111,110}
-func encode(s []byte) string {
-	i:=0
-	for k,v:=range s{
-		if i!=4{
-			s[k]=v+key[i]
-			i++
-		}else {
-			i=0
-		}
-	}
-	return string(s)
-}
-func decode(s []byte) string {
-	i:=0
-	for k,v:=range s{
-		if i!=4{
-			s[k]=v-key[i]
-			i++
-		}else {
-			i=0
-		}
-	}
-	return string(s)
-}
+
 func main() {
 	flag.Parse()
-	fileName:=data
-	f,err:=os.OpenFile(*fileName,os.O_RDONLY,0666)
-	if err!=nil{
-		fmt.Println("fail to open file")
+	if *filename==""{
 		return
 	}
-	buffer:=make([]byte,4096)
-	_,_=f.Read(buffer)
-	fmt.Println(decode())
+	fileName:=filename
+	//buffer:=make([]byte,4096)
+	//k,_:=f.Read(buffer)
+	//fmt.Println(buffer[k-1])
+//	t:=encode(buffer[:k])
+//	fmt.Println(decode([]byte(t)))
+	if *encodeing&&*data!=""{
+		f,err:=os.OpenFile(*fileName,os.O_RDWR|os.O_CREATE|os.O_TRUNC,0666)
+		if err!=nil{
+			return
+		}
+		temp:=*data
+		encodeTemp:=encode([]byte(temp))
+		f.WriteString(encodeTemp)
+		return
+	}else if *decodeing{
+		f,err:=os.OpenFile(*fileName,os.O_RDWR,0666)
+		if err!=nil{
+			return
+		}
+		buffer:=make([]byte,4096)
+		size,_:=f.Read(buffer)
+		temp:=buffer[:size]
+		//os.Truncate(*filename,0)
+		f.Truncate(0)
+		f.Seek(0,0)
+		f.WriteString(decode(temp))
+		return
+	}else{
+		return}
 }

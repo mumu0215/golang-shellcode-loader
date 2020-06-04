@@ -26,8 +26,8 @@ func readaFile(name string) []byte {
 	if err!=nil{
 		os.Exit(0)
 	}
-	_,_=f.Read(a)
-	t,_:=hex.DecodeString(string(a))
+	size,_:=f.Read(a)
+	t,_:=hex.DecodeString(decode(a[:size]))
 	return t
 }
 

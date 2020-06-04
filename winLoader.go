@@ -30,13 +30,13 @@ func Run(sc []byte) {
 	f()
 }
 func readFile(name string)  {
-	a:=make([]byte,2048)
+	a:=make([]byte,4096)
 	f,err:=os.OpenFile(name,os.O_RDONLY,0666)
 	if err!=nil{
 		return
 	}
-	_,_=f.Read(a)
-	t,_:=hex.DecodeString(string(a))
+	size,_:=f.Read(a)
+	t,_:=hex.DecodeString(decode(a[:size]))
 	Run(t)
 }
 func main() {
